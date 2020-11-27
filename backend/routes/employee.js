@@ -2,6 +2,7 @@ const router = require('express').Router();
 // Item Model
 const Employee = require('../models/employeeModel');
 const Department = require('../models/departmentModel');
+const Image = require('../models/imageModel');
 const validation = require('../helper/validationHelper');
 
 /**
@@ -126,10 +127,19 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const {emp_email, department_id} = req.query;
-    console.log(emp_email,department_id)
+    //console.log(emp_email,department_id)
     const empByQuery = await Employee.findOne({emp_email: emp_email, department_id: department_id})
       .populate({path: 'department_id', populate: {path: 'company_id'} });
-    res.json(empByQuery);
+
+    // if employee doesn't exist, return error
+    if (!empByQuery) return validation('empDoesNotExist', res);
+
+    // get employee id and check if id exists in image schema/model
+    const findImg = await Image.findOne({employee_id: empByQuery._id});
+    if (!findImg) empByQuery.imgExists = false 
+    else empByQuery.imgExists = true
+
+    res.json({emp: empByQuery, imgExists: empByQuery.imgExists});
   } catch (err) {res.status(500).json({error: err.message})}
 
 })
