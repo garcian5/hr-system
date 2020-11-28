@@ -99,13 +99,25 @@ router.get('/', (req, res) => {
 })
 
 /**
- * Get image by id
+ * Get image by image id
  */
 router.get('/:id', async(req, res) => {
   try {
     const findImg = await Image.findById(req.params.id)
-      .populate({path: 'department_id', populate: {path: 'company_id', 
-                populate: 'employee_id'} });
+      .populate({path: 'employee_id', populate: {path: 'department_id', 
+                populate: 'company_id'} });
+    res.json(findImg);
+  } catch (err) {res.status(500).json({error: err.message})}
+})
+
+/**
+ * Get image by employee id
+ */
+router.get('/emp-img/:id', async(req, res) => {
+  try {
+    //console.log(req.params.id)
+    const findImg = await Image.findOne({employee_id: req.params.id})
+      .populate({path: 'employee_id', populate: {path: 'department_id', populate: 'company_id'} });
     res.json(findImg);
   } catch (err) {res.status(500).json({error: err.message})}
 })
