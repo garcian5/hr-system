@@ -55,7 +55,7 @@ router.post('/', upload, async (req, res, next) => {
   if (duplicateEmp) return validation('duplicateEmpId', res)
   // if the employee does not exist in the database, return an error message saying employee doesn't exist
   if (existingEmp) return validation('empDoesNotExist', res) */
-
+  //console.log('img obj:', obj)
   const savedImg = await Image.create(obj)
   //console.log(savedImg);
   await savedImg.save();
