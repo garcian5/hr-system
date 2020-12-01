@@ -3,6 +3,7 @@ const router = require('express').Router();
 const Department = require('../models/departmentModel');
 const Company = require('../models/companyModel');
 const Employee = require('../models/employeeModel');
+const Image = require('../models/imageModel');
 const ObjectId = require('mongodb').ObjectID;
 const validation = require('../helper/validationHelper');
 
@@ -144,11 +145,32 @@ router.post('/adddept', async (req, res) => {
 
 router.delete('/delete/:id', async (req, res) => {
   try {
-    const delEmpInDept = await Employee.deleteMany({department_id: req.params.id});    
+    // check if department exists
+    const deptExists = await Department.findById(req.params.id);
+    if (!deptExists) return validation('deptDoesNotExist', res);
+
+    // delete image first; find employees within department
+    const findEmpsInDept = await Employee.find({department_id: req.params.id});
+
+    // this array is used to record deleted images
+    const delImgArray = [];
+
+    // if findEmpsInDept is not empty, iterate through the array and begin deleting images
+    if (findEmpsInDept) {
+      for (const item of findEmpsInDept) {
+        const findImg = await Image.deleteMany({employee_id: item._id});
+        if (!findImg) continue; // if no employee img, skip it
+        delImgArray.push(findImg)
+      }
+    }
+
+    // delete employee(s) second
+    const delEmpInDept = await Employee.deleteMany({department_id: req.params.id});
+    // finally, delete department
     const delDept = await Department.findByIdAndDelete(req.params.id);
-    //console.log(`deleted emps: ${delEmpInDept}, deleted dept: ${delDept}`);
+    
     if (!delDept) return validation('invalidDelete', res)
-    res.json({msg: 'Department deleted!', dept: delDept, emp: delEmpInDept});
+    res.json({msg: 'Department deleted!', dept: delDept, emp: delEmpInDept, img: delImgArray});
 
   } catch (err) { res.status(500).json({error: err.message}) }
 })

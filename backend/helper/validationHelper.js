@@ -10,7 +10,6 @@
  */ 
 module.exports = validationHelper = (type, res) => {
   switch (type) {
-    // register/login
     case ("missingEntry"):
       return res.status(400).json({
         msg: "Please Enter all the required fields."
@@ -39,6 +38,11 @@ module.exports = validationHelper = (type, res) => {
     case ("existingDepartment"):
       return res.status(400).json({
         msg: "A department with this name in the company already exists."
+      });
+    
+    case ("deptDoesNotExist"):
+      return res.status(400).json({
+        msg: "This Department does not exist."
       });
     
     // for image
