@@ -120,5 +120,19 @@ router.get('/emp-img/:id', async(req, res) => {
   } catch (err) {res.status(500).json({error: err.message})}
 })
 
+/**
+ * Delete image by image id
+ */
+router.delete('/del-image/:id', async (req, res) => {
+  try {
+    const imgExists = await Image.findById(req.params.id);
+    if (!imgExists) return validation('imgNotExist', res);
+
+    const delImg = await Image.findByIdAndDelete(req.params.id);
+
+    res.json({msg: 'Image deleted!', img: delImg})
+  } catch (err) {res.status(500).json({error: err.message})}
+})
+
 
 module.exports = router;

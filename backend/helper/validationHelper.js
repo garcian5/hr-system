@@ -44,6 +44,11 @@ module.exports = validationHelper = (type, res) => {
       return res.status(400).json({
         msg: "This Department does not exist."
       });
+
+    case ("compDoesNotExist"):
+      return res.status(400).json({
+        msg: "This Company does not exist."
+      });
     
     // for image
     case ("duplicateEmpId"):
@@ -59,6 +64,11 @@ module.exports = validationHelper = (type, res) => {
     case ("invalidImgDel"):
       return res.status(400).json({
         msg: "Image could not be deleted."
+      });
+    // for image
+    case ("imgNotExist"):
+      return res.status(400).json({
+        msg: "Image does not exist."
       });
 
     case ("invalidDelete"):

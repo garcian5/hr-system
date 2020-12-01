@@ -3,6 +3,7 @@ const router = require('express').Router();
 const Company = require('../models/companyModel');
 const Employee = require('../models/employeeModel');
 const Department = require('../models/departmentModel');
+const Image = require('../models/imageModel');
 const validation = require('../helper/validationHelper');
 
 /**
@@ -85,31 +86,51 @@ router.post('/addcompany', async (req, res) => {
   }
 });
 
+/**
+ * DELETE company by company id
+ * deletes everything from company to its departments to its employees and to its employee images
+ */
 router.delete('/delete/:id', async (req, res) => {
   try {
+    // check if department exists
+    const compExists = await Company.findById(req.params.id);
+    if (!compExists) return validation('compDoesNotExist', res);
+
     // find departments that has matching company id to delete
-    const dept = await Department.find();
-    const deptsToDel = dept.filter(data => data.company_id == req.params.id);
-    
-    // initialize a variable to store deleted employees
-    const delEmpInDept=[];
-    const delDept=[];
+    const dept = await Department.find({company_id: req.params.id});
+
+    const deptsArray = [];
+    const empsArray = [];
+    const imgArray = [];
 
     // if there is a department to delete, delete the employees first then the department
     // otherwise, skip this step and delete the company    
-    if (deptsToDel) {
-      // delete employees in departments that exists in the company
-      for (i of deptsToDel) {
-        delEmpInDept.push(await Employee.deleteMany({department_id: i._id}));
+    if (dept) {
+      // iterate through departments
+      for (const deptItem of dept) {
+        // find employees in current iterated department
+        const emp = await Employee.find({department_id: deptItem._id});
+        if (!emp) continue; // if no employee in department, skip
+        // iterate through employees of department
+        for (const empItem of emp) {
+          // find/delete image of employee
+          const delImg = await Image.deleteMany({employee_id: empItem._id})
+          if (!delImg) continue;
+          imgArray.push(delImg)
+        }
+        // delete employees here
+        const delEmp = await Employee.deleteMany({department_id: deptItem._id})
+        empsArray.push(delEmp)
       }
-      // delete departments that exists in the company
-      delDept.push(await Department.deleteMany({company_id: req.params.id}));
+      // delete departments here by their company id
+      const delDept = await Department.deleteMany({company_id: req.params.id})
+      deptsArray.push(delDept)
     }
 
-    // delete company
-    const delComp = await Company.findByIdAndDelete(req.params.id);
-    if (!delComp) return validation('invalidDelete', res);
-    res.json({msg: 'Department deleted!', comp: delComp, dept: delDept, emp: delEmpInDept});    
+    // delete company here
+    const delComp = await Company.findByIdAndDelete(req.params.id)
+    
+    res.json({msg: 'Company successfully deleted!', comp: delComp, dept: deptsArray, emps: empsArray, imgs: imgArray})
 
   } catch (err) { res.status(500).json({error: err.message}) }
 })
