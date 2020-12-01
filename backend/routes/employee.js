@@ -199,10 +199,13 @@ router.post('/update/:id', async (req, res) => {
 
 router.delete('/delete/:id', async (req, res) => {
   try {
+    // delete employee image
+    const delEmpImg = await Image.deleteMany({employee_id: req.params.id});
     const delEmployee = await Employee.findByIdAndDelete(req.params.id);
-    //console.log(delEmployee);
+    
     if (!delEmployee) return validation('invalidDelete', res)
-    res.json({msg: 'Employee deleted!', emp: delEmployee});
+    
+    res.json({msg: 'Employee deleted!', emp: delEmployee, img: delEmpImg});
 
   } catch (err) { res.status(500).json({error: err.message}) }
 })

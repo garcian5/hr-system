@@ -51,6 +51,11 @@ module.exports = validationHelper = (type, res) => {
       return res.status(400).json({
         msg: "This employee does not exist."
       });
+    // for image
+    case ("invalidImgDel"):
+      return res.status(400).json({
+        msg: "Image could not be deleted."
+      });
 
     case ("invalidDelete"):
       return res.status(400).json({

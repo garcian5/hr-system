@@ -91,11 +91,9 @@ router.post('/update/:id', upload, async (req, res) => {
 /**
  * ROUTES
  */
-router.get('/', (req, res) => {
-  Image.find({}, (err, items) => {
-    // i think this will store our image into mongodb as a binary data
-    err ? console.log(err) : res.json({img: items});
-  })
+router.get('/emp-id-only', async (req, res) => {
+  const getImgs = await Image.find({}).select('employee_id');
+  res.json(getImgs)
 })
 
 /**
