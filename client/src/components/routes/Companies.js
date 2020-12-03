@@ -19,14 +19,7 @@ export default class Companies extends Component {
     axios.get(process.env.REACT_APP_DATABASE_PATH + 'company/all-company')
       .then(res => this.setState({companies: res.data, delCompClicked: false}))
       .catch(err=> console.log(err.response.msg));
-  }
-  
-  /* delCompany = (company_id) => {
-    axios.delete(process.env.REACT_APP_DATABASE_PATH + 'company/delete/' + company_id)
-      .then(res => console.log(res.data + ' deleted!'))
-      .catch(err=> console.log(err.response.msg));
-    window.location.reload();
-  } */
+  }    
 
   updateClicked = (company_id) => {
     this.props.history.push('/comp-update', company_id)
@@ -49,9 +42,6 @@ export default class Companies extends Component {
           >
             <ion-icon name="trash-outline"></ion-icon>
           </button>
-          {/* <button className="delete-btn" onClick={() => this.delCompany(comp._id)}>
-            <ion-icon name="trash-outline"></ion-icon>
-          </button> */}
         </td>
         <td>          
           {comp.company_name}
