@@ -175,24 +175,39 @@ router.post('/update/:id', async (req, res) => {
       emp_address} = req.body;
     
     //console.log(department_id, emp_name);
+    // if department id doesn't exist in departments list
+    const deptExists = await Department.findOne({_id: department_id})
+      if(!deptExists) return validation('invalidDeptID', res);
 
-  let termination_date = req.body.termination_date;
-  if (!termination_date) termination_date = null;
+    // if missing entry field
+    if (!department_id || !emp_name || !emp_contact_no || !emp_contact_no ||
+      !interview_date || !hire_date || !start_date || !emp_address)
+      return validation('missingEntry', res);
 
-  const empToUpdate = await Employee.findOneAndUpdate({_id: req.params.id}, {
-    department_id: department_id,
-    emp_name: emp_name,
-    emp_email: emp_email,
-    emp_contact_no: emp_contact_no,
-    emp_address: emp_address,
-    interview_date: Date.parse(interview_date),
-    hire_date: Date.parse(hire_date),
-    start_date: Date.parse(start_date),
-    termination_date: termination_date !== null ? Date.parse(termination_date) : null
-  }, {useFindAndModify: false});
-  /* console.log(empToUpdate)
-  console.log('termination date:', termination_date) */
-  res.send({msg: 'update successful!', emp: empToUpdate})
+    // if employee already exists
+    const existingEmployee = await Employee.findOne({emp_email: emp_email})
+      .populate({path: 'department_id', populate: {path: 'company_id'} });
+
+    if (existingEmployee) return validation('existingEmployee', res);
+    
+    // if no termination date:
+    let termination_date = req.body.termination_date;
+    if (!termination_date) termination_date = null;
+
+    const empToUpdate = await Employee.findOneAndUpdate({_id: req.params.id}, {
+      department_id: department_id,
+      emp_name: emp_name,
+      emp_email: emp_email,
+      emp_contact_no: emp_contact_no,
+      emp_address: emp_address,
+      interview_date: Date.parse(interview_date),
+      hire_date: Date.parse(hire_date),
+      start_date: Date.parse(start_date),
+      termination_date: termination_date !== null ? Date.parse(termination_date) : null
+    }, {useFindAndModify: false});
+    /* console.log(empToUpdate)
+    console.log('termination date:', termination_date) */
+    res.send({msg: 'update successful!', emp: empToUpdate})
   
   } catch (err) {res.status(500).json({error: err.message})}
 })

@@ -87,6 +87,35 @@ router.post('/addcompany', async (req, res) => {
 });
 
 /**
+ * @route   POST company/update/:id
+ * @desc    update a company
+ * @access  Public
+ * */
+router.post('/update/:id', async (req, res) => {
+  try {    
+    const {company_name} = req.body;
+    let {date_established, company_address} = req.body;
+    
+    if (!company_name) return validation('missingEntry', res);
+
+    const existingCompany = await Company.findOne({company_name: company_name});
+    if(existingCompany) return validation('existingCompany', res);
+
+    if(!date_established) date_established = null;
+    if(!company_address) company_address = 'N/A';
+
+    const compToUpdate = await Company.findOneAndUpdate({_id: req.params.id}, {
+      company_name: company_name,
+      date_established: date_established !== null ? Date.parse(date_established) : null,
+      company_address: company_address
+    }, {useFindAndModify: false})
+    res.send({msg: 'update successful!', emp: compToUpdate})
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
+});
+
+/**
  * DELETE company by company id
  * deletes everything from company to its departments to its employees and to its employee images
  */

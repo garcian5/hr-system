@@ -143,6 +143,38 @@ router.post('/adddept', async (req, res) => {
   } catch (err) {res.status(500).json({error: err.message});}
 });
 
+/**
+ * @route   POST department/update/:id
+ * @desc    update a department
+ * @access  Public
+ * */
+router.post('/update/:id', async (req, res) => {
+  try {
+    const {company_id, department_name} = req.body;
+
+    // if company id doesn't exist in companies list
+    const compExists = await Company.findOne({_id: company_id})
+    if(!compExists) return validation('invalidCompID', res);
+    
+    // if required fields aren't entered, send error msg
+    if (!department_name || !company_id) return validation('missingEntry', res);
+
+    // if object id is invalid, send error msg
+    if (!ObjectId.isValid(company_id)) return validation('invalidCompID', res);
+
+    // if the name exists in the company, send error message
+    const existingDeptName = await Department.findOne({department_name: department_name, company_id: company_id});      
+    if(existingDeptName) return validation('existingDepartment', res);
+
+    const updateDept = await Department.findOneAndUpdate({_id: req.params.id}, {
+      company_id: company_id,
+      department_name: department_name
+    }, {useFindAndModify: false});
+    
+    res.send({msg: 'update successful!', emp: updateDept})
+  } catch (err) {res.status(500).json({error: err.message});}
+});
+
 router.delete('/delete/:id', async (req, res) => {
   try {
     // check if department exists
