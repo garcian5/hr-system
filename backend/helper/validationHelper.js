@@ -70,6 +70,11 @@ module.exports = validationHelper = (type, res) => {
       return res.status(400).json({
         msg: "Image does not exist."
       });
+    // for image
+    case ("invalidMimeType"):
+      return res.status(400).json({
+        msg: "Invalid file type. Please Select an image file with the extension of 'png', 'jpg', or 'jpeg'."
+      });
 
     case ("invalidDelete"):
       return res.status(400).json({

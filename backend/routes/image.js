@@ -39,8 +39,11 @@ const upload = multer({storage: storage}).single('image')
 router.post('/', upload, async (req, res, next) => {
   // object destructuring
   //const {employee_id, img_name} = req.body;
-  //console.log(req.file)
-
+  // if the submitted type is not of image and/or is a gif, send error message
+  
+  if (!req.file.mimetype.match('^image') || req.file.mimetype === 'image/gif') {
+    return validation('invalidMimeType', res)
+  }
   const obj = {
     employee_id: req.file.originalname,
     image: {
@@ -69,7 +72,11 @@ router.post('/', upload, async (req, res, next) => {
  * */
 router.post('/update/:id', upload, async (req, res) => {
   try {
-    //console.log(req.file)
+    
+    // if the submitted type is not of image and/or is a gif, send error message
+    if (!req.file.mimetype.match('^image') || req.file.mimetype === 'image/gif') {
+      return validation('invalidMimeType', res)
+    }
     // find image if it exists, if not, return a flag indicating it doesn't exist.
     const findImg = await Image.findOne({employee_id: req.params.id});
     if (!findImg) return res.json({imgExist: false});
