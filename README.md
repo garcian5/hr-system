@@ -18,7 +18,7 @@ This project is created to practice CRUD applications to MERN stack projects.
 
 ***
 
-##Commands
+## Commands
 
 ### To run server
 `npm run server` 
@@ -37,3 +37,8 @@ or
 ### Install client/frontend dependencies
 `npm run client-install`
 
+---
+# Note
+
+### Ignore Test Routes
+`imgs` folder is there for resource/test purposes only and will not affect anything in the program. You can ignore or delete it.
