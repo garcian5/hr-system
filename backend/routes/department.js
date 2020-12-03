@@ -162,10 +162,6 @@ router.post('/update/:id', async (req, res) => {
     // if object id is invalid, send error msg
     if (!ObjectId.isValid(company_id)) return validation('invalidCompID', res);
 
-    // if the name exists in the company, send error message
-    const existingDeptName = await Department.findOne({department_name: department_name, company_id: company_id});      
-    if(existingDeptName) return validation('existingDepartment', res);
-
     const updateDept = await Department.findOneAndUpdate({_id: req.params.id}, {
       company_id: company_id,
       department_name: department_name

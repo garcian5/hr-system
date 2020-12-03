@@ -183,12 +183,6 @@ router.post('/update/:id', async (req, res) => {
     if (!department_id || !emp_name || !emp_contact_no || !emp_contact_no ||
       !interview_date || !hire_date || !start_date || !emp_address)
       return validation('missingEntry', res);
-
-    // if employee already exists
-    const existingEmployee = await Employee.findOne({emp_email: emp_email})
-      .populate({path: 'department_id', populate: {path: 'company_id'} });
-
-    if (existingEmployee) return validation('existingEmployee', res);
     
     // if no termination date:
     let termination_date = req.body.termination_date;

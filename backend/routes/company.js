@@ -98,9 +98,6 @@ router.post('/update/:id', async (req, res) => {
     
     if (!company_name) return validation('missingEntry', res);
 
-    const existingCompany = await Company.findOne({company_name: company_name});
-    if(existingCompany) return validation('existingCompany', res);
-
     if(!date_established) date_established = null;
     if(!company_address) company_address = 'N/A';
 
