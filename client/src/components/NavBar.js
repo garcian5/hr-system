@@ -12,11 +12,7 @@ function NavBar() {
                   <Dropdown.Menu>
                       <Dropdown.Item as={Link} to="/companies">Companies</Dropdown.Item>                        
                       <Dropdown.Item as={Link} to="/departments">Departments</Dropdown.Item>                        
-                      <Dropdown.Item as={Link} to="/employees">Employees</Dropdown.Item>                        
-                      
-                      <Dropdown.Item as={Link} to="/test-dept">Test Departments</Dropdown.Item>
-                      <Dropdown.Item as={Link} to="/test-comp">Test Companies</Dropdown.Item>
-                      <Dropdown.Item as={Link} to="/test-img">Test Image Upload</Dropdown.Item>
+                      <Dropdown.Item as={Link} to="/employees">Employees</Dropdown.Item>
                   </Dropdown.Menu>
               </Dropdown>
             </div>            
