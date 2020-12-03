@@ -1,6 +1,8 @@
-import React from 'react'
+import React from 'react';
+import Modal from 'react-bootstrap/Modal';
 
 export default function DeletePopUp(props) {
+  console.log(props.company_name)
   return (
     <Modal
       {...props}
@@ -20,7 +22,7 @@ export default function DeletePopUp(props) {
       </Modal.Body>
 
       <Modal.Footer>
-        <button className='del-img-mod-btn' onClick={delCompany}>Delete</button>
+        <button className='del-img-mod-btn' onClick={props.delcompany}>Delete</button>
         <button className='cancel-btn' onClick={props.onHide}>Cancel</button>
       </Modal.Footer>
     </Modal>

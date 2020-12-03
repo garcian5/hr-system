@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import DeleteCompBox from '../modal/company/DeleteCompBox';
+import DeleteActions from '../modal/DeleteActions';
 
 export default class Companies extends Component {
   constructor () {
@@ -9,6 +10,7 @@ export default class Companies extends Component {
     this.state = {
       companies: [],
       compIdToDel: '',
+      compNameToDel: '',
 
       delCompClicked: false
     }
@@ -38,7 +40,12 @@ export default class Companies extends Component {
         <td>          
           <button 
             className="delete-btn" 
-            onClick={() => this.setState({delCompClicked: true, compIdToDel: comp._id})}
+            onClick={() => this.setState({
+                delCompClicked: true, 
+                compIdToDel: comp._id,
+                compNameToDel: comp.company_name
+              })
+            }
           >
             <ion-icon name="trash-outline"></ion-icon>
           </button>
@@ -64,11 +71,17 @@ export default class Companies extends Component {
       <div>
         <h1 className="heading">Company</h1>
         <Link to='/comp-entry'>Add Company</Link>
-        <DeleteCompBox
+        <DeleteActions
           show={this.state.delCompClicked}
           onHide={this.onModalHide}
           company_id={this.state.compIdToDel}
+          company_name={this.state.compNameToDel}
         />
+        {/* <DeleteCompBox
+          show={this.state.delCompClicked}
+          onHide={this.onModalHide}
+          company_id={this.state.compIdToDel}
+        /> */}
         <table className="center">
           <tbody>
             <tr>
