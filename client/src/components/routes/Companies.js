@@ -1,32 +1,38 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import DeleteCompBox from '../modal/company/DeleteCompBox';
 
 export default class Companies extends Component {
   constructor () {
     super();
     this.state = {
-      companies: []
+      companies: [],
+      compIdToDel: '',
+
+      delCompClicked: false
     }
 
   }
   
   componentDidMount() {
     axios.get(process.env.REACT_APP_DATABASE_PATH + 'company/all-company')
-      .then(res => this.setState({companies: res.data}))
+      .then(res => this.setState({companies: res.data, delCompClicked: false}))
       .catch(err=> console.log(err.response.msg));
   }
   
-  delCompany = (company_id) => {
+  /* delCompany = (company_id) => {
     axios.delete(process.env.REACT_APP_DATABASE_PATH + 'company/delete/' + company_id)
       .then(res => console.log(res.data + ' deleted!'))
       .catch(err=> console.log(err.response.msg));
     window.location.reload();
-  }
+  } */
 
   updateClicked = (company_id) => {
     this.props.history.push('/comp-update', company_id)
   }
+
+  onModalHide = () => {this.setState({delCompClicked: false})}
 
   render() {
     const renderComps = this.state.companies.map(comp =>(
@@ -37,9 +43,15 @@ export default class Companies extends Component {
           </button>
         </td>
         <td>          
-          <button className="delete-btn" onClick={() => this.delCompany(comp._id)}>
+          <button 
+            className="delete-btn" 
+            onClick={() => this.setState({delCompClicked: true, compIdToDel: comp._id})}
+          >
             <ion-icon name="trash-outline"></ion-icon>
           </button>
+          {/* <button className="delete-btn" onClick={() => this.delCompany(comp._id)}>
+            <ion-icon name="trash-outline"></ion-icon>
+          </button> */}
         </td>
         <td>          
           {comp.company_name}
@@ -62,6 +74,11 @@ export default class Companies extends Component {
       <div>
         <h1 className="heading">Company</h1>
         <Link to='/comp-entry'>Add Company</Link>
+        <DeleteCompBox
+          show={this.state.delCompClicked}
+          onHide={this.onModalHide}
+          company_id={this.state.compIdToDel}
+        />
         <table className="center">
           <tbody>
             <tr>
