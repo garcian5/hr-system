@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-/* import DeleteImgModal from '../modal/DeleteImgModal';
-import UpdateImgModal from '../modal/UpdateImgModal'; */
+import DeleteImgModal from '../modal/DeleteImgModal';
+import UpdateImgModal from '../modal/UpdateImgModal';
 
 export default class EmployeeInfo extends Component {
   state = {
@@ -93,7 +93,7 @@ export default class EmployeeInfo extends Component {
   
           <h3>{emp_info.emp_name}</h3>
 
-          {/* <DeleteImgModal 
+          <DeleteImgModal 
             show={this.state.delModalShow}
             onHide={this.onModalHide}
             img_id={this.state.img_id}
@@ -105,7 +105,7 @@ export default class EmployeeInfo extends Component {
             emp_email={emp_info.emp_email}
             comp_id={emp_info.department_id.company_id._id}
             emp_id={emp_info._id}
-          /> */}
+          />
 
           <div className="img-block">
             { this.state.img !== null ?

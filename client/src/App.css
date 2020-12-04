@@ -128,8 +128,8 @@ table.center {
 }
 
 .img-block {
-  width: 30%;
-  height: 30%;
+  width: 20%;
+  height: 20%;
   margin: 35px auto;
 }
 
@@ -146,8 +146,8 @@ table.center {
   display: none;
   position: absolute;
   z-index: 1;  
-  left: 270px;
-  margin-top: 5px;
+  /* left: 270px; */
+  margin: 5px;
 }
 .img-btn{
   display: inline;
