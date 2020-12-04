@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import DeleteCompBox from '../modal/company/DeleteCompBox';
-import DeleteActions from '../modal/DeleteActions';
+//import DeleteCompBox from '../modal/company/DeleteCompBox';
+//import DeleteActions from '../modal/DeleteActions';
 
 export default class Companies extends Component {
   constructor () {
@@ -71,12 +71,12 @@ export default class Companies extends Component {
       <div>
         <h1 className="heading">Company</h1>
         <Link to='/comp-entry'>Add Company</Link>
-        <DeleteActions
+        {/* <DeleteActions
           show={this.state.delCompClicked}
           onHide={this.onModalHide}
           company_id={this.state.compIdToDel}
           company_name={this.state.compNameToDel}
-        />
+        /> */}
         {/* <DeleteCompBox
           show={this.state.delCompClicked}
           onHide={this.onModalHide}

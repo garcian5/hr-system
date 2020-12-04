@@ -15,20 +15,16 @@ export default class Employees extends Component {
   }
 
   componentDidMount() {    
-    /* axios.get(process.env.REACT_APP_DATABASE_PATH + 'employee/allemployees')
-      //.then(res => console.log(res.data.elems))
-      .then(res => this.setState({employees: res.data.elems}))
-      .catch(err=> console.log(err.response.data.msg)); */
-    
     const {state} = this.props.history.location;
     
+    // get department
     axios.get(process.env.REACT_APP_DATABASE_PATH + 'department/getdept')
       .then(res => this.setState({
         departments: res.data.elems,
         // if we go back from i.e. updating employee or employee info,
         // set the id to the previous employee we viewed
-        dept_id: state !== undefined ? state.dept_id : res.data.elems[0]._id,
-        dept_name: state !== undefined ? res.data.elems.filter(dept => 
+        dept_id: res.data.elems.length <=0 ? '' : state !== undefined ? state.dept_id : res.data.elems[0]._id,
+        dept_name: res.data.elems.length <=0 ? '' : state !== undefined ? res.data.elems.filter(dept => 
           dept._id === state.dept_id)[0].department_name : ''
       }))
   }
@@ -111,6 +107,16 @@ export default class Employees extends Component {
   }
 
   render() {
+    // if departments list is empty
+    if (this.state.departments.length <= 0) {
+      return(
+        <div>
+          <h4>There are no current existing Departments in the System.</h4>
+          <p>Please Enter a Department.</p>
+          <Link to='/dept-entry'>Add Department</Link>
+        </div>
+      )
+    }
     const renderEmp = this.state.employees.map(emp =>(
       <tr key={emp._id}>
         <td>
