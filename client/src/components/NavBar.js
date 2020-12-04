@@ -17,7 +17,7 @@ function NavBar() {
               </Dropdown>
             </div>            
 
-            <NavLink className="navbar-brand nav-brand" exact to="/">HR DATA</NavLink>
+            <NavLink className="navbar-brand nav-brand" exact to="/companies">HR DATA</NavLink>
 
             <div>
               <NavLink to="/addmore">Add More</NavLink>
