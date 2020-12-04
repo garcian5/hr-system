@@ -25,6 +25,9 @@ import Test from './components/test/Test';
 
 import UpdateCompany from './components/update/UpdateCompany';
 
+// new design
+import DeptByComp from './components/newcomponents/DeptByComp'
+
 function App() {
   return (
     <div className="App">      
@@ -51,7 +54,11 @@ function App() {
           <Route path="/test-img" component={Test} />
           <Route path="/test-dept" component={TestDept} />
           <Route path="/test-comp" component={TestComp} />          
-          <Route path="/test-update-emp" component={TestUpdateEmp} />          
+          <Route path="/test-update-emp" component={TestUpdateEmp} />
+
+          {/*This is the new design routes*/}
+          <Route path="/dept-by-comp" component={DeptByComp} />
+
         </Switch>
       </Router>
     </div>

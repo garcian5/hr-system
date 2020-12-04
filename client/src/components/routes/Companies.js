@@ -28,6 +28,10 @@ export default class Companies extends Component {
 
   onModalHide = () => {this.setState({delCompClicked: false})}
 
+  compNameClicked = (comp_id) => {
+    this.props.history.push('/dept-by-comp', comp_id)
+  }
+
   render() {
     const renderComps = this.state.companies.map(comp =>(
       <tr key={comp._id}>
@@ -49,8 +53,10 @@ export default class Companies extends Component {
             <ion-icon name="trash-outline"></ion-icon>
           </button>
         </td>
-        <td>          
-          {comp.company_name}
+        <td>  
+          <button className="employee-name" onClick={() => this.compNameClicked(comp._id)}>        
+            {comp.company_name}
+          </button>
         </td>
         <td>          
           {comp.company_address}
