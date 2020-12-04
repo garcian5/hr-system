@@ -10,7 +10,9 @@ export default class Departments extends Component {
       companies: [],
       company_name: '',
       comp_id: '',
-      deptsByComps: []
+      deptsByComps: [],
+
+      firstMounted: true
     }
   }
 
@@ -25,7 +27,8 @@ export default class Departments extends Component {
         companies: req2.data,
         departments: req1.data.elems,
         comp_id: req2.data.length === 0 ? '' : propState !== undefined ? propState.comp_id : req2.data[0]._id,
-        company_name: req2.data.length === 0 ? '' : propState !== undefined ? propState.company_name : req2.data[0].company_name
+        company_name: req2.data.length === 0 ? '' : propState !== undefined ? propState.company_name : req2.data[0].company_name,
+        firstMounted: true
       })
     }))
   }
@@ -51,7 +54,12 @@ export default class Departments extends Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {    
+  componentDidUpdate(prevProps, prevState, snapshot) {   
+    if (this.state.firstMounted) {
+      this.setState({
+        firstMounted: false
+      })
+    } 
     if (prevState.company_name !== this.state.company_name) {
       const extractCompId = this.state.companies.filter((comp) => comp.company_name === this.state.company_name);
       axios.get('http://localhost:5000/department/company/' + extractCompId[0]._id)
@@ -68,8 +76,15 @@ export default class Departments extends Component {
   }
 
   render() {
+    if (this.state.firstMounted) {
+      return (
+        <div>
+          <h1>Loading...</h1>
+        </div>
+      )
+    }
     // if there are no companies existing, it means there are no departments existing    
-    if (this.state.companies.length <= 0) {
+    else if (!this.state.firstMounted && this.state.companies.length <= 0) {
       return (
         <div>
           <h4>There are no Companies and Departments existing.</h4>
