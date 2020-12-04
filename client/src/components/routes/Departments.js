@@ -20,12 +20,12 @@ export default class Departments extends Component {
       axios.get('http://localhost:5000/department/getdept'),
       axios.get('http://localhost:5000/company/all-company')
     ])
-    .then(axios.spread((req1, req2) => {
+    .then(axios.spread((req1, req2) => {      
       this.setState({
-        departments: req1.data.elems,
         companies: req2.data,
-        comp_id: propState !== undefined ? propState.comp_id : req2.data[0]._id,
-        company_name: propState !== undefined ? propState.company_name : req2.data[0].company_name
+        departments: req1.data.elems,
+        comp_id: req2.data.length === 0 ? '' : propState !== undefined ? propState.comp_id : req2.data[0]._id,
+        company_name: req2.data.length === 0 ? '' : propState !== undefined ? propState.company_name : req2.data[0].company_name
       })
     }))
   }
@@ -68,6 +68,16 @@ export default class Departments extends Component {
   }
 
   render() {
+    // if there are no companies existing, it means there are no departments existing    
+    if (this.state.companies.length <= 0) {
+      return (
+        <div>
+          <h4>There are no Companies and Departments existing.</h4>
+          <p>Please Enter a Company and Department.</p>
+          <Link to='/comp-entry'>Add Companies</Link>
+        </div>
+      )
+    }
     const renderDept = this.state.departments.map(dept =>(
       <tr key={dept._id}>
         <td>
@@ -86,7 +96,7 @@ export default class Departments extends Component {
       </tr>			
 		))
     return (
-      <div>        
+      <div>            
         <h1 className="heading">Departments</h1>
         <Link to='/dept-entry'>Add Department</Link>
 

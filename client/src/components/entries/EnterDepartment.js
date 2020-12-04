@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert'
+import { Link } from 'react-router-dom';
 
 export default class EnterDepartment extends Component {
   state = {
@@ -62,6 +63,16 @@ export default class EnterDepartment extends Component {
   }
 
   render() {
+    // if there are no companies in the database, don't let user enter Department
+    if (this.state.companies.length <= 0) {
+      return (
+        <div>
+          <h4>There are no existing Companies in the System.</h4>
+          <p>Please Enter a Company to get started.</p>
+          <Link to='/comp-entry'>Add Companies</Link>
+        </div>
+      )
+    }
     return (
       <div>
         <button 
