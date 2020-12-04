@@ -11,7 +11,9 @@ export default class EnterDepartment extends Component {
     sent: false,
     invalidComp: false,
     errorMsg: '',
-    showErrMsg: false
+    showErrMsg: false,
+
+    firstMounted: true
   }
 
   handleChange = (event) => {
@@ -56,15 +58,31 @@ export default class EnterDepartment extends Component {
     axios.get(process.env.REACT_APP_DATABASE_PATH + 'company/all-company')
       .then(res => {
         this.setState({
-          companies: res.data
+          companies: res.data,
+          firstMounted: true
         })
       })
       .catch(err=> console.log(err.response.data.msg));        
   }
 
+  componentDidUpdate () {
+    if (this.state.firstMounted) {
+      this.setState({
+        firstMounted: false
+      })
+    }
+  }
+
   render() {
+    if (this.state.firstMounted) {
+      return (
+        <div>
+          <h1>Loading...</h1>
+        </div>
+      )
+    }
     // if there are no companies in the database, don't let user enter Department
-    if (this.state.companies.length <= 0) {
+    else if (this.state.companies.length <= 0) {
       return (
         <div>
           <h4>There are no existing Companies in the System.</h4>
