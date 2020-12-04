@@ -4,7 +4,9 @@ const validation = require('../helper/validationHelper');
 
 // import image model
 const Image = require('../models/imageModel');
-const Employee = require('../models/employeeModel')
+const Company = require('../models/companyModel');
+const Department = require('../models/departmentModel');
+const Employee = require('../models/employeeModel');
 
 // import file system and middleware multer for uploading images
 // import path so we can define path of the image we are uploading
@@ -125,6 +127,37 @@ router.get('/emp-img/:id', async(req, res) => {
       .populate({path: 'employee_id', populate: {path: 'department_id', populate: 'company_id'} });
     res.json(findImg);
   } catch (err) {res.status(500).json({error: err.message})}
+})
+
+/**
+ * @route   POST images/by-company/:id
+ * @desc    Get employees & images by company id
+ * */
+router.get('/by-company/:id', async (req, res) => {
+  try {
+    const depts = await Department.find({company_id: req.params.id});
+    const countDepts = await Department.countDocuments({company_id: req.params.id});
+    const employees = [];
+    const empByCompWImg = [];
+    let empCount = 0;
+
+    // iterate through departments and find employees by every department id of depts
+    for(const dept of depts){
+      const emps = await Employee.find({department_id: dept._id});
+      empCount += await Employee.countDocuments({department_id: dept._id});
+
+      // iterate through emps and find images by every employee id of emps
+      for (const emp of emps) {
+        const img = await Image.findOne({employee_id: emp._id})
+          .populate({path: 'employee_id', populate: {path: 'department_id', populate: 'company_id'} });
+        empByCompWImg.push(img);
+      }
+      // store emps in array
+      if (emps.length !== 0) employees.push(emps);      
+    }
+
+    res.json({depts: depts, deptCount: countDepts, emps: employees, empCount: empCount, empsWimg: empByCompWImg});
+  } catch (error) {res.status(500).json({error: error.message})}
 })
 
 /**

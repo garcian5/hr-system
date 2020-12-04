@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
 
 export default class DeptByComp extends Component {
+  state = {
+    departments: [],
+    employees: [],
+    empsWimg: [],
+    empCount: 0,
+    deptCount: 0
+  }
+
+  componentDidMount () {
+
+  }
+
   render() {
     return (
       <div>
