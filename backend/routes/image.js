@@ -47,7 +47,6 @@ router.post('/', upload, async (req, res, next) => {
     return validation('invalidMimeType', res)
   }
   const obj = {
-    employee_id: req.file.originalname,
     image: {
       data: fs.readFileSync(path.join('client/public/uploads/' + req.file.filename)),
       contentType: 'image/png' || 'image/jpeg' || 'image/jpg'
@@ -84,7 +83,6 @@ router.post('/update/:id', upload, async (req, res) => {
     if (!findImg) return res.json({imgExist: false});
 
     const imgToUpdate = await Image.findOneAndUpdate({employee_id: req.params.id}, {
-      employee_id: req.params.id,
       image: {
         data: fs.readFileSync(path.join('client/public/uploads/' + req.file.filename)),
         contentType: 'image/png' || 'image/jpeg' || 'image/jpg'
