@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+// in new system design
 export default class DeptByComp extends Component {
   state = {
     departments: [],
