@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ImageSchema = new Schema({
-    employee_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true, unique: true },
+const ImageSchema = new Schema({    
     // our image data type is a buffer
     // allows us to store our img as data in array forms
     image: {
