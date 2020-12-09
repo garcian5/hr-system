@@ -143,17 +143,26 @@ router.get('/by-company/:id', async (req, res) => {
 
     // iterate through departments and find employees by every department id of depts
     for(const dept of depts){
-      const emps = await Employee.find({department_id: dept._id});
-      empCount += await Employee.countDocuments({department_id: dept._id});
+      const emps = await Employee.find({department_id: dept._id})
+        .populate({path: 'department_id', populate: {path: 'company_id'}});
+      empCount += await Employee.countDocuments({department_id: dept._id});   
+      
+      // if emps is empty, skip
+      if (emps.length === 0) continue;
 
       // iterate through emps and find images by every employee id of emps
-      for (const emp of emps) {
+      for (const emp of emps) {        
         const img = await Image.findOne({employee_id: emp._id})
           .populate({path: 'employee_id', populate: {path: 'department_id', populate: 'company_id'} });
+        if (!img) {
+          // store emps in array if it doesn't have image
+          employees.push(emp);
+          continue;
+        };
         empByCompWImg.push(img);
       }
       // store emps in array
-      if (emps.length !== 0) employees.push(emps);      
+      //employees.push(emps);      
     }
 
     res.json({depts: depts, deptCount: countDepts, emps: employees, empCount: empCount, empsWimg: empByCompWImg});
