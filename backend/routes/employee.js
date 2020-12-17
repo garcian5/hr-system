@@ -63,6 +63,8 @@ router.post('/addemployee', async (req, res) => {
       emp_address} = req.body;
 
     let {termination_date} = req.body;
+    // image id
+    let image_id = req.body.image_id;    
 
     // if department id doesn't exist in departments list
     const deptExists = await Department.findOne({_id: department_id})
@@ -86,11 +88,18 @@ router.post('/addemployee', async (req, res) => {
     //if (existingEmployee) return validation('existingEmployee', res);
     if (existingEmployee.department_id.company_id._id == deptComp.department_id.company_id._id) return validation('existingEmployee', res); */
 
+    // if no image id:
+    if (image_id) {      
+      // find image in the database, if it can't find it, then it doesn't exist therefore set it to null.
+      const findImg = await Image.findById(image_id);
+      if (!findImg) image_id = null;
+    } else image_id = null;
     // if no termination date:
     if (!termination_date) termination_date = null;
   
     const newEmployee = new Employee({
       department_id, 
+      image_id,
       emp_name,
       emp_email,
       emp_contact_no,
@@ -216,8 +225,19 @@ router.post('/update/:id', async (req, res) => {
     let termination_date = req.body.termination_date;
     if (!termination_date) termination_date = null;
 
+    // image id
+    let image_id = req.body.image_id;
+    if (image_id || image_id.trim() !== '') {      
+      // find image in the database, if it can't find it, then it doesn't exist therefore set it to null.
+      const findImg = await Image.findById(image_id);
+      if (!findImg) image_id = null;
+    } else image_id = null;
+
+    console.log(image_id);
+
     const empToUpdate = await Employee.findOneAndUpdate({_id: req.params.id}, {
       department_id: department_id,
+      image_id: image_id,
       emp_name: emp_name,
       emp_email: emp_email,
       emp_contact_no: emp_contact_no,
@@ -227,6 +247,7 @@ router.post('/update/:id', async (req, res) => {
       start_date: Date.parse(start_date),
       termination_date: termination_date !== null ? Date.parse(termination_date) : null
     }, {useFindAndModify: false});
+    console.log('emp:', empToUpdate)
     /* console.log(empToUpdate)
     console.log('termination date:', termination_date) */
     res.send({msg: 'update successful!', emp: empToUpdate})
