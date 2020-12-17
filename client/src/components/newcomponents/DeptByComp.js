@@ -62,16 +62,16 @@ export default class DeptByComp extends Component {
       renderEmpsWImg = this.state.empsWimg.map(emp =>(
         <tr key={emp._id}>          
           <td>
-            {emp.employee_id.emp_name}
+            {emp.emp_name}
           </td>
           <td>
-            {emp.employee_id.emp_email}
+            {emp.emp_email}
           </td>
           <td>
-            {emp.employee_id.emp_contact_no}
+            {emp.emp_contact_no}
           </td>
           <td>
-            {emp.employee_id.emp_address}
+            {emp.emp_address}
           </td>
           {/* <td>
             {emp.employee_id.interview_date ? emp.interview_date.substring(0, 10) : 'N/A'}

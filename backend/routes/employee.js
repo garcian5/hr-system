@@ -113,7 +113,10 @@ router.post('/addemployee', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const empById = await Employee.findById(req.params.id)
-      .populate({path: 'department_id', populate: {path: 'company_id'} });
+      .populate({path: 'image_id'})
+      .populate({path: 'department_id', populate: {path: 'company_id'} })
+
+    console.log(empById.image_id);
     res.json(empById);
   } catch (err) {res.status(500).json({error: err.message})}
 
@@ -160,7 +163,32 @@ router.get('/emp-id/:id', async (req, res) => {
 })
 
 /**
- * @route   POST employee/:id
+ * @route   UPDATE employee/update_img/:id
+ * @desc    Update an employee image by employee id
+ * */
+router.post('/update_img/:id', async (req, res) => {
+  try {
+    const image_id = req.body.image_id;
+    
+    console.log('img:',image_id);
+    const empToUpdate = await Employee.findOneAndUpdate(
+      {_id: req.params.id}, 
+      {$set: {'image_id':image_id}},
+      /* function(err, doc) {
+        if (err) {
+          console.log(err)
+          return res.send({success: false, msg: 'Error!'});
+        };
+        return res.send({success: true, msg: 'Employee image updated!', emp: doc})
+      }, */
+      {useFindAndModify: false}
+    )
+    res.send({msg: 'Employee image updated!', emp: empToUpdate})
+  } catch (err) {res.status(500).json({error: err.message})}
+})
+
+/**
+ * @route   POST employee/update/:id
  * @desc    Update an employee by id
  * */
 router.post('/update/:id', async (req, res) => {
