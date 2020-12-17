@@ -23,6 +23,7 @@ router.get('/department/:id', async (req, res) => {
  * */
 router.get('/allemployees', (req, res) => {
   Employee.find()
+    .populate({path: 'image_id'})
     .populate({path: 'department_id', populate: {path: 'company_id'} })
     .exec()
     .then(emps => {
@@ -31,6 +32,7 @@ router.get('/allemployees', (req, res) => {
           return {
             _id: emp._id,
             department_id: emp.department_id,
+            image_id: emp.image_id,
             emp_name: emp.emp_name,
             emp_email: emp.emp_email,
             emp_contact_no: emp.emp_contact_no,
