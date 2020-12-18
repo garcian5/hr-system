@@ -195,7 +195,7 @@ router.get('/by-comp_id/:id', async (req, res) => {
                         .populate({path: 'department_id', populate: {path: 'company_id'} });
       // if no emps in dept, skip iteration
       if (!empsInDept) continue;
-      console.log(empsInDept);
+      
       for (const emp of empsInDept) emps.push(emp);
     }
     res.json({comp: getComp, depts: getDeptsOfComp, emps: emps});
