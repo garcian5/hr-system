@@ -2,6 +2,7 @@ const router = require('express').Router();
 // Item Model
 const Employee = require('../models/employeeModel');
 const Department = require('../models/departmentModel');
+const Company = require('../models/companyModel');
 const Image = require('../models/imageModel');
 const validation = require('../helper/validationHelper');
 
@@ -172,6 +173,35 @@ router.get('/emp-id/:id', async (req, res) => {
   } catch (err) {res.status(500).json({error: err.message})}
 
 })
+
+/**
+ * @route   GET employee/by-comp_id/:id
+ * @desc    gets employees in a company
+ * */
+router.get('/by-comp_id/:id', async (req, res) => {
+  try {
+    const getComp = await Company.findById(req.params.id);
+    const getDeptsOfComp = await Department.find({company_id: req.params.id});
+    // if there is no departments in company
+    if (!getDeptsOfComp) {
+      return res.json({comp: [], depts: [], emps: []});
+    }
+    //console.log(getDeptsOfComp);
+    const emps = [];
+    // iterate getdeptsofcomp and get employee info there
+    for (const depts of getDeptsOfComp) {
+      const empsInDept = await Employee.find({department_id: depts._id})
+                        .populate({path: 'image_id'})
+                        .populate({path: 'department_id', populate: {path: 'company_id'} });
+      // if no emps in dept, skip iteration
+      if (!empsInDept) continue;
+      console.log(empsInDept);
+      for (const emp of empsInDept) emps.push(emp);
+    }
+    res.json({comp: getComp, depts: getDeptsOfComp, emps: emps});
+  } catch (err) {res.status(500).json({error: err.message}); }
+})
+
 
 /**
  * @route   UPDATE employee/update_img/:id
