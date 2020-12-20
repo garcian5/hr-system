@@ -54,8 +54,7 @@ export default class EmployeeInfo extends Component {
     const {emp_info} = this.state; // object destructuring
     if (emp_info.length < 1) {
       return (<h1>Loading...</h1>)     
-    } else {    
-      console.log('date:', new Date(emp_info.start_date.substring(0, 10).replace(/(^-)|(-$)/g, ",")))
+    } else {
       const start_date_ = new Date(emp_info.start_date.substring(0,10));
       const yearsInCompDiff = Date.now() - start_date_;
       const yearsInComp = new Date(yearsInCompDiff);

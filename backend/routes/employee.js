@@ -128,7 +128,6 @@ router.get('/:id', async (req, res) => {
       .populate({path: 'image_id'})
       .populate({path: 'department_id', populate: {path: 'company_id'} })
 
-    console.log(empById.image_id);
     res.json(empById);
   } catch (err) {res.status(500).json({error: err.message})}
 
