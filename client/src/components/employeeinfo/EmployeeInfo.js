@@ -25,7 +25,7 @@ export default class EmployeeInfo extends Component {
     const compId = this.props.history.location.state;
     Axios.get(process.env.REACT_APP_DATABASE_PATH + 'employee/' + compId)
       .then(res => {
-        console.log(res.data)
+        //console.log(res.data)
         this.setState({
           emp_info: res.data,
           img: (res.data.image_id !== null && res.data.image_id !== undefined) ? this.arrayBufferToBase64(res.data.image_id.image.data.data) : null,
@@ -50,14 +50,16 @@ export default class EmployeeInfo extends Component {
   updateClicked = () => this.setState({updateModalShow: true})
   onModalHide = () => this.setState({delModalShow: false, updateModalShow: false})
 
-  render() {
+  render() {    
     const {emp_info} = this.state; // object destructuring
     if (emp_info.length < 1) {
       return (<h1>Loading...</h1>)     
     } else {    
+      console.log('date:', new Date(emp_info.start_date.substring(0, 10).replace(/(^-)|(-$)/g, ",")))
       const start_date_ = new Date(emp_info.start_date.substring(0,10));
       const yearsInCompDiff = Date.now() - start_date_;
       const yearsInComp = new Date(yearsInCompDiff);
+      const inCompSince = new Date(emp_info.start_date.substring(0, 10).replace(/(^-)|(-$)/g, ",")).toString();
       // to get rid of spaces
       //console.log(emp_info.emp_name.replace(/\s+/g, ''))
   
@@ -135,7 +137,7 @@ export default class EmployeeInfo extends Component {
             <p>{emp_info.emp_name} is an employee at {emp_info.department_id.company_id.company_name}.</p>
             <p>They work under the {emp_info.department_id.department_name} department.</p>
             { emp_info.termination_date === null ?
-              <p>They have been with the company since {Date(emp_info.start_date.substring(0, 10)).slice(4, 13)}.</p>
+              <p>They have been with the company since {inCompSince.slice(4, 13)}.</p>
               //<p>They have been with the company since {start_date_}.</p>
               : 
               <p>They have worked with the company from 
