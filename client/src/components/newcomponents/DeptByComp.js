@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import EmpByCompTable from '../renderingtables/EmpByCompTable';
 
 export default class DeptByComp extends Component {
   state = {
@@ -53,6 +54,9 @@ export default class DeptByComp extends Component {
     } else {
       return (
         <div>
+          <EmpByCompTable 
+            employees={this.state.employees}
+          />
           {this.props.history.location.state}
         </div>
       )
