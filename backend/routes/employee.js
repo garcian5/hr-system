@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const ObjectId = require('mongoose').Types.ObjectId;
 // Item Model
 const Employee = require('../models/employeeModel');
 const Department = require('../models/departmentModel');
@@ -133,12 +134,43 @@ router.get('/:id', async (req, res) => {
 
 })
 
+/**
+ * @route   GET employee/filter/?key=value&key=value&key=value
+ * @desc    FILTER employee by query
+ * */
+router.get('/', async (req, res) => {
+  try {
+    let {emp_name, department_id} = req.query;
+    // regular expressions that gets any data that starts with the emp_name
+    const regExpEmpName = new RegExp("^"+ emp_name);
+    let filterResults;
+    //if (!ObjectId.isValid(department_id)) department_id = null;
+    const objId = new ObjectId( (department_id.length < 12) ? "123456789012" : department_id );
+    console.log(objId)
+    filterResults = await Employee.find({$or: [{department_id: objId}, {emp_name: regExpEmpName}]})
+                    .populate({path: 'department_id', populate: {path: 'company_id'} });
+
+    //console.log(filterResults)
+    //const allEmps = await Employee.find({}).populate({path: 'department_id', populate: {path: 'company_id'} });
+    const allEmps = [];
+    if (!filterResults || filterResults.length < 1) {
+      allEmps.push(await Employee.find({}).populate({path: 'department_id', populate: {path: 'company_id'} }));
+      return res.json({msg: 'allemps', emps: allEmps});
+    } else {    
+      return res.json({msg: 'filtered results', emps: filterResults})
+    }
+    /* if (department_id.trim() !== '') {
+      // iterate through filtered results
+    } */
+  } catch   (err) {res.status(500).json({error: err.message})}
+
+})
 
 /**
  * @route   GET employee/?key=value&key=value
  * @desc    get an employee by query
  * */
-router.get('/', async (req, res) => {
+/* router.get('/', async (req, res) => {
   try {
     const {emp_email, department_id} = req.query;
     
@@ -153,7 +185,7 @@ router.get('/', async (req, res) => {
     res.json({emp: empByQuery, imgExists: empByQuery.imgExists});
   } catch (err) {res.status(500).json({error: err.message})}
 
-})
+}) */
 
 /**
  * @route   GET employee/emp-id/:id
@@ -200,7 +232,6 @@ router.get('/by-comp_id/:id', async (req, res) => {
     res.json({comp: getComp, depts: getDeptsOfComp, emps: emps});
   } catch (err) {res.status(500).json({error: err.message}); }
 })
-
 
 /**
  * @route   UPDATE employee/update_img/:id
